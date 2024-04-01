@@ -51,9 +51,10 @@ resource "aws_instance" "example" {
   }
 
   #HIGH: Instance Does Not Require IMDS Access to Require a Token:
-  metadata_options{
-    http_token = "required"
+  metadata_options {
+    
   }
+
   
   
   #HIGH: Root Block Device is Not Encrypted
