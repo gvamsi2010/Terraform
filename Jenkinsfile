@@ -35,7 +35,7 @@ pipeline {
         stage('Terratest') {
             steps {
                 dir('test') {
-                    sh 'if [ ! -f go.mod ]; then go mod init github.com/palakbhawsar98/Terraform-CI-CD-Pipeline; fi'
+                    sh 'if [ ! -f go.mod ]; then go mod init github.com/gvamsi2010/Terraform.git; fi'
                     sh 'go mod tidy'
                     sh 'go test'
                     // You can add similar error handling logic here if required
