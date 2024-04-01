@@ -43,14 +43,14 @@ pipeline {
             }
         }
 
-        stage('Terraform workflow') {
+        /*stage('Terraform workflow') {
             steps {
                 sh 'terraform init'
                 sh 'terraform plan -out=tfplan'
                 sh 'terraform apply -auto-approve tfplan'
                 // You can add similar error handling logic here if required
             }
-        }
+        }*/
     }
 
     post {
