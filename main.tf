@@ -13,7 +13,7 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "public" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.subnet_cidr_block
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 }
 
 # Create an internet gateway
@@ -35,12 +35,13 @@ resource "aws_security_group" "web" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["63.117.112.0/21"]
   }
 }
 
 # Launch EC2 instance
 resource "aws_instance" "example" {
+  
   ami             = var.ami_id
   instance_type   = var.instance_type
   subnet_id       = aws_subnet.public.id
@@ -49,6 +50,17 @@ resource "aws_instance" "example" {
     Name = var.instance_name
   }
 
+  #HIGH: Instance Does Not Require IMDS Access to Require a Token:
+  metadata_options{
+    http_token = "required"
+  }
+  
+  
+  #HIGH: Root Block Device is Not Encrypted
+  root_block_device {
+    encrypted = true
+  }
+  
   # Provisioners for deploying Python web app
   provisioner "file" {
     source      = var.app_source_path
