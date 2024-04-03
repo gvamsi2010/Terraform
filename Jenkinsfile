@@ -5,11 +5,13 @@ pipeline {
         stage('TFLint') {
             steps {
                 script {
-                    try {
-                        // Run tflint and capture the exit code
-                        sh 'tflint'
-                    } catch (Exception e) {
+                    // Run tflint and capture the exit code
+                    def tflintExitCode = sh(returnStatus: true, script: 'tflint')
+
+                    // Check if tflint command failed (exit code not 0)
+                    if (tflintExitCode != 0) {
                         echo 'TFLint found potential problems'
+                        // Do not mark the build as failed
                     }
                 }
             }
@@ -18,11 +20,13 @@ pipeline {
         stage('TFSec') {
             steps {
                 script {
-                    try {
-                        // Run tfsec and capture the exit code
-                        sh 'tfsec'
-                    } catch (Exception e) {
+                    // Run tfsec and capture the exit code
+                    def tfsecExitCode = sh(returnStatus: true, script: 'tfsec')
+
+                    // Check if tfsec command failed (exit code not 0)
+                    if (tfsecExitCode != 0) {
                         echo 'TFSec found potential problems'
+                        // Do not mark the build as failed
                     }
                 }
             }
@@ -33,11 +37,8 @@ pipeline {
                 dir('test') {
                     sh 'if [ ! -f go.mod ]; then go mod init github.com/gvamsi2010/Terraform.git; fi'
                     sh 'go mod tidy'
-                    try {
-                        sh 'go test'
-                    } catch (Exception e) {
-                        echo 'Error occurred during Terratest'
-                    }
+                    sh 'go test'
+                    // You can add similar error handling logic here if required
                 }
             }
         }
